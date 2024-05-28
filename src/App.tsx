@@ -1,33 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import { Col, Container, Row } from 'react-bootstrap';
+import MemoCard from './MemoCard';
 
 function App() {
-  const [count, setCount] = useState(0)
+  
+  // const [board] = useState(new Board)
+  const colCount = 6;
+  const rowCount = colCount;
+
+  const rows = [];
+  for (let r = 0; r < rowCount; r++) {
+    const cols = [];
+    for (let c = 0; c < colCount; c++) {
+      cols.push(<Col><MemoCard/></Col>);
+    }
+    rows.push(<Row>{cols}</Row>);
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Container fluid className="board-container">
+        {rows}
+      </Container>
     </>
   )
 }
