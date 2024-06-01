@@ -5,6 +5,13 @@
 body {
   background-color: #242424;
 }
+
+.col {
+  display: flex;
+  text-align: center;
+  margin: 0 auto;
+}
+
 /* #root {
   max-width: 1280px;
   margin: 0 auto;
