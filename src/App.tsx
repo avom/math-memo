@@ -8,7 +8,7 @@ import { LimitExpressionGenerator } from './model/ExpressionGenerator';
 
 function App() {
 
-  const colCount = 6;
+  const colCount = 4;
   const rowCount = colCount;
 
   const {setBoard} = useBoardContext();
