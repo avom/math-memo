@@ -49,17 +49,21 @@ export default class Board {
   flip(col: number, row: number) {
     const card = this.cards[col][row];
     if (this.flippedCards.length == 2) {
-      this.flippedCards[0].flip();
-      this.flippedCards[1].flip();
 
       if (this.flippedCards[0].hasSameValue(this.flippedCards[1])) {
         this.flippedCards[0].vanish();
         this.flippedCards[1].vanish();
+      } else {
+        this.flippedCards[0].flip();
+        this.flippedCards[1].flip();
       }
 
       this.flippedCards.pop();
       this.flippedCards.pop();
-      return;
+      
+      card.flip();
+      this.flippedCards.push(card);
+        return;
     }
 
     if (card.isFlipped()) {
@@ -83,7 +87,7 @@ export default class Board {
       const col: Card[] = [];
       for (let r = 0; r < this.rowCount; r++) {
         const card = this.cards[c][r].clone();
-        if (card.isFlipped()) {
+        if (card.isFlipped() && !card.isVanished()) {
           result.flippedCards.push(card);
         }
         col.push(card);

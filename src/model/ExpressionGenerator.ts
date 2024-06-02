@@ -11,7 +11,7 @@ export class NullExpressionGenerator {
     return ["", 0];
   }
 
-  generateExpressionForValue(value: number): string {
+  generateExpressionForValue(_value: number): string {
     return "";
   }
 }
@@ -96,7 +96,7 @@ export class LimitExpressionGenerator implements ExpressionGenerator {
   private generateMultiplicationForValue(value: number): string {
     const sqrtValue = Math.floor(Math.sqrt(value));
     let left = 0;
-    let right = randomInt(this.limit);
+    let right = randomInt(this.limit + 1);
     while (left * right != value) {
       left = randomInt(sqrtValue + 1);
       right = Math.floor(value / left);
@@ -106,7 +106,7 @@ export class LimitExpressionGenerator implements ExpressionGenerator {
 
   private generateDivisionForValue(value: number): string {
     if (value == 0) {
-      return "0 ÷ " + randomInt(this.limit);
+      return "0 ÷ " + (randomInt(this.limit) + 1);
     }
     const right = randomInt(Math.floor(this.limit / value)) + 1;
     const left = right * value;

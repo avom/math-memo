@@ -14,7 +14,7 @@ function App() {
   const {setBoard} = useBoardContext();
 
   useEffect(() => {
-    setBoard(new Board(colCount, rowCount, new LimitExpressionGenerator(20)));
+    setBoard(new Board(colCount, rowCount, new LimitExpressionGenerator(10)));
   }, [setBoard]);
 
   const rows = [];
