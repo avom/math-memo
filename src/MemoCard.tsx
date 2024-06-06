@@ -2,15 +2,20 @@ import ReactCardFlip from "react-card-flip";
 import "./MemoCard.css";
 import { useBoardContext } from "./context/BoardContext";
 
-const MemoCard = (props: {col: number, row: number}) => {
-
-  const {board, setBoard} = useBoardContext();
+function MemoCard(props: { col: number; row: number }) {
+  const { board, setBoard } = useBoardContext();
 
   const onClick = (ev: any) => {
     ev.preventDefault();
     if (board) {
       board.flip(props.col, props.row);
       setBoard(board.clone());
+
+      if (board.isSolved()) {
+        setTimeout(() => {
+          setBoard(null);
+        }, 1500);
+      }
     }
   };
 
@@ -19,12 +24,14 @@ const MemoCard = (props: {col: number, row: number}) => {
 
   return (
     <div className={"memo-card" + (isVanished ? " vanish" : "")}>
-      <ReactCardFlip isFlipped={isFlipped} >
+      <ReactCardFlip isFlipped={isFlipped}>
         <div className="memo-card-content memo-card-front" onClick={onClick}></div>
-        <div className="memo-card-content memo-card-back" onClick={onClick}>{board?.getExpression(props.col, props.row)}</div>
+        <div className="memo-card-content memo-card-back" onClick={onClick}>
+          {board?.getExpression(props.col, props.row)}
+        </div>
       </ReactCardFlip>
     </div>
   );
-};
+}
 
 export default MemoCard;

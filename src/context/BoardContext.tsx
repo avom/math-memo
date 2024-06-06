@@ -3,7 +3,7 @@ import Board from "../model/Board";
 
 interface BoardContextValue {
   board: Board | null;
-  setBoard: (board: Board) => void;
+  setBoard: (board: Board | null) => void;
 }
 
 export const BoardContext = createContext<BoardContextValue | undefined>(undefined);

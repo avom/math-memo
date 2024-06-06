@@ -1,41 +1,42 @@
-import './App.css';
-import { Col, Container, Row } from 'react-bootstrap';
-import MemoCard from './MemoCard';
-import Board from './model/Board';
-import { useBoardContext } from './context/BoardContext';
-import { useEffect } from 'react';
-import { LimitExpressionGenerator } from './model/ExpressionGenerator';
+import "./App.css";
+import Board from "./model/Board";
+import { useBoardContext } from "./context/BoardContext";
+import { LimitExpressionGenerator } from "./model/ExpressionGenerator";
+import MainMenu from "./MainMenu";
+import BoardView from "./BoardView";
+import { DifficultyLevel, GameSettings } from "./model/Game";
 
 function App() {
+  const { board, setBoard } = useBoardContext();
 
-  const colCount = 4;
-  const rowCount = colCount;
-
-  const {setBoard} = useBoardContext();
-
-  useEffect(() => {
-    setBoard(new Board(colCount, rowCount, new LimitExpressionGenerator(10)));
-  }, [setBoard]);
-
-  const rows = [];
-  for (let r = 0; r < rowCount; r++) {
-    const cols = [];
-    for (let c = 0; c < colCount; c++) {
-      cols.push(
-        <Col key={c}>
-          <MemoCard col={c} row={r}/>
-        </Col>);
+  function createExpressionGenerator(difficulty: DifficultyLevel) {
+    switch (difficulty) {
+      case DifficultyLevel.VeryEasy:
+        return new LimitExpressionGenerator(5);
+      case DifficultyLevel.Easy:
+        return new LimitExpressionGenerator(10);
+      case DifficultyLevel.Medium:
+        return new LimitExpressionGenerator(20);
+      case DifficultyLevel.Hard:
+        return new LimitExpressionGenerator(100);
+      case DifficultyLevel.VeryHard:
+        return new LimitExpressionGenerator(1000);
+      default:
+        console.error("Unsupported difficulty level");
+        return new LimitExpressionGenerator(1000);
     }
-    rows.push(<Row key={r}>{cols}</Row>);
   }
 
-  return (
-    <>
-      <Container fluid className="board-container">
-        {rows}
-      </Container>
-    </>
-  )
+  function startGame(settings: GameSettings) {
+    const expressionGenerator = createExpressionGenerator(settings.difficulty);
+    setBoard(new Board(settings.cols, settings.rows, expressionGenerator));
+  }
+
+  if (board) {
+    return <BoardView />;
+  } else {
+    return <MainMenu startGame={startGame} />;
+  }
 }
 
-export default App
+export default App;
