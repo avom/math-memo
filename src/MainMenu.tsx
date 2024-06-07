@@ -45,7 +45,7 @@ function MainMenu(props: { startGame: (settings: GameSettings) => void }) {
         ))}
       </ButtonGroup>
       <br />
-      <ButtonGroup className="mb-5">
+      <ButtonGroup className="mb-5" vertical>
         {difficultyRadios.map((radio, idx) => (
           <ToggleButton
             key={idx}
