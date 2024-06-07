@@ -1,17 +1,15 @@
 .board-container-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  max-width: 100vh;
-  height: 100%;
   width: 100%;
+  max-width: min(960px, 100vh);
 }
 
 .board-container-6 {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  max-width: 100vh;
-  height: 100%;
   width: 100%;
+  max-width: min(960px, 100vh);
 }
 
 .memo-card-container {
