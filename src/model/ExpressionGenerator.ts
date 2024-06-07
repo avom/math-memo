@@ -1,3 +1,4 @@
+import { countDivisors } from "../utils/Math";
 import { randomInt } from "../utils/RandomUtils";
 
 export interface ExpressionGenerator {
@@ -26,85 +27,77 @@ export class LimitExpressionGenerator implements ExpressionGenerator {
   generateExpression(): [string, number] {
     const opIdx = randomInt(4);
     switch (opIdx) {
-      case 0:
-        return this.generateAddition();
-      case 1:
-        return this.generateSubtraction();
-      case 2:
-        return this.generateMultiplication();
-      case 3:
-        return this.generateDivision();
-      default: // Shouldn't happen, but cover for typos
-        throw Error("Unsupported operation");
+      case 0: {
+        const value = randomInt(this.limit);
+        return [this.generateAddition(value), value];
+      }
+      case 1: {
+        const value = randomInt(this.limit);
+        return [this.generateSubtraction(value), value];
+      }
+      case 2: {
+        const left = randomInt(Math.sqrt(this.limit)) + 1;
+        const right = randomInt(Math.floor(this.limit / left) + 1);
+        if (Math.random() < 0.5) {
+          return [left + " × " + right, left * right];
+        } else {
+          return [right + " × " + left, left * right];
+        }
+      }
+      case 3: {
+        const right = randomInt(Math.sqrt(this.limit)) + 1;
+        const value = randomInt(Math.floor(this.limit / right) + 1);
+        return [right * value + " / " + right, value];
+      }
+      default:
+        throw new Error("Unexpected operation");
     }
   }
 
   generateExpressionForValue(value: number): string {
-    const opIdx = randomInt(4);
-    switch (opIdx) {
-      case 0:
-        return this.generateAdditionForValue(value);
-      case 1:
-        return this.generateSubtractionForValue(value);
-      case 2:
-        return this.generateMultiplicationForValue(value);
-      case 3:
-        return this.generateDivisionForValue(value);
-      default: // Shouldn't happen, but cover for typos
-        throw Error("Unsupported operation");
-    }
+    const additionsThreshold = value + 1;
+    const subtractionsThreshold = this.limit - value + 1 + additionsThreshold;
+    const multiplicationsThreshold = countDivisors(value) + subtractionsThreshold;
+    const divisionsThreshold =
+      Math.floor(this.limit / (value || this.limit)) + multiplicationsThreshold;
+
+    const r = randomInt(divisionsThreshold);
+
+    if (r < additionsThreshold) return this.generateAddition(value);
+    if (r < subtractionsThreshold) return this.generateSubtraction(value);
+    if (r < multiplicationsThreshold) return this.generateMultiplication(value);
+    return this.generateDivision(value);
   }
 
-  private generateAddition(): [string, number] {
-    const left = randomInt(this.limit + 1);
-    const right = randomInt(this.limit - left + 1);
-    return [left + " + " + right, left + right];
-  }
-
-  private generateSubtraction(): [string, number] {
-    const left = randomInt(this.limit + 1);
-    const right = randomInt(left + 1);
-    return [left + " - " + right, left - right];
-  }
-
-  private generateMultiplication(): [string, number] {
-    const left = randomInt(Math.floor(Math.sqrt(this.limit)) + 1);
-    const rightLimit = left != 0 ? Math.floor(this.limit / left) : this.limit;
-    const right = randomInt(rightLimit);
-    return [left + " × " + right, left * right];
-  }
-
-  private generateDivision(): [string, number] {
-    const right = randomInt(Math.floor(Math.sqrt(this.limit))) + 1;
-    const quotient = randomInt(Math.floor(this.limit / right));
-    const left = right * quotient;
-    return [left + " ÷ " + right, quotient];
-  }
-
-  private generateAdditionForValue(value: number): string {
+  private generateAddition(value: number): string {
     const left = randomInt(value + 1);
     const right = value - left;
     return left + " + " + right;
   }
 
-  private generateSubtractionForValue(value: number): string {
+  private generateSubtraction(value: number): string {
     const left = randomInt(this.limit - value + 1) + value;
     const right = left - value;
     return left + " - " + right;
   }
 
-  private generateMultiplicationForValue(value: number): string {
+  private generateMultiplication(value: number): string {
     const sqrtValue = Math.floor(Math.sqrt(value));
     let left = 0;
     let right = randomInt(this.limit + 1);
     while (left * right != value) {
-      left = randomInt(sqrtValue + 1);
-      right = Math.floor(value / left);
+      if (Math.random() < 0.5) {
+        left = randomInt(sqrtValue + 1);
+        right = Math.floor(value / left);
+      } else {
+        right = randomInt(sqrtValue + 1);
+        left = Math.floor(value / right);
+      }
     }
     return left + " × " + right;
   }
 
-  private generateDivisionForValue(value: number): string {
+  private generateDivision(value: number): string {
     if (value == 0) {
       return "0 ÷ " + (randomInt(this.limit) + 1);
     }
