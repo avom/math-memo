@@ -47,7 +47,7 @@ export class LimitExpressionGenerator implements ExpressionGenerator {
       case 3: {
         const right = randomInt(Math.sqrt(this.limit)) + 1;
         const value = randomInt(Math.floor(this.limit / right) + 1);
-        return [right * value + " / " + right, value];
+        return [right * value + " ÷ " + right, value];
       }
       default:
         throw new Error("Unexpected operation");
